@@ -22,6 +22,8 @@
 # TypeScript cache
 *.tsbuildinfo
 
+.idea/
+
 # Logs
 npm-debug.log*
 yarn-debug.log*
