@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>I.R.U.S.</title>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    <meta charset="utf-8" />
+    <style>
+      /* Always set the map height explicitly to define the size of the div
+       * element that contains the map. */
+      #map {
+        height: 50%;
+        width: 50%;
+        margin: 0 25%;
+      }
+      /* Optional: Makes the sample page fill the window. */
+      html {
+        background: url(https://thedailybanter.com/.image/t_share/MTM2NjQ0ODcwNjYyMDcxOTAz/moon-earth-planet-wallpapers-landscape.jpg)
+          no-repeat center fixed;
+        background-size: cover;
+      }
+      html,
+      body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+      .form-log {
+        margin: auto;
+        width: 30%;
+        padding: 10px;
+      }
+      input[type="text"] {
+        width: 100%;
+        padding: 10px 20px;
+        margin: 8px 0;
+        font-size: 15px;
+        background-color: white;
+        box-sizing: border-box;
+        border: 3px solid #000080;
+        -webkit-transition: 0.5s;
+        transition: 0.5s;
+        outline: none;
+        font-family: "Comic Sans MS", cursive, sans-serif;
+      }
+
+      ::placeholder {
+        color: #000080;
+      }
+
+      h1 {
+        font-size: 30px;
+        padding-bottom: 20px;
+        color: white;
+        margin: 5% 0;
+        width: 100%;
+      }
+
+      input[type="text"]:focus {
+        border: 3px solid #555;
+      }
+
+      .center {
+        margin: 0 auto;
+        border-radius: 5px;
+        background: #7f7f7f;
+        background: rgba(0, 0, 0, 0.8);
+        padding: 20px;
+        width: 50%;
+        box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2),
+          0 6px 20px 0 rgba(0, 0, 0, 0.19);
+      }
+
+      label {
+        color: #000080;
+        font-size: 22px;
+        padding: 8px;
+        font-family: "Comic Sans MS", cursive, sans-serif;
+      }
+
+      button {
+        background-color: white;
+        color: #000080;
+        padding: 12px 22px;
+        border: 2px solid #000080;
+        font-family: "Comic Sans MS", cursive, sans-serif;
+        margin: 0 25%;
+      }
+      button:hover {
+        background-color: #000080;
+        color: white;
+      }
+
+      .clearfix2 {
+        margin: 0 100%;
+      }
+      header {
+        color: white;
+        display: flex;
+        justify-content: space-between;
+        padding: 2rem;
+        margin: 0 30%;
+        font-size: 30px;
+      }
+    </style>
+    <script src="dist/bundle.js"></script>
+  </head>
+  <body>
+    <header>
+      <h1>Select a point on map</h1>
+      <p class="clearfix">
+        <button id="back" type="submit" name="submit">BACK</button>
+      </p>
+    </header>
+    <div id="map"></div>
+    <div class="center">
+      <form class="form-log" id="formCoords">
+        <p class="clearfix">
+          <input
+            type="text"
+            id="date"
+            name="date"
+            placeholder="DAY.MONTH.YEAR"
+          />
+        </p>
+        <p class="clearfix">
+          <input
+            type="text"
+            id="hour"
+            name="hour"
+            placeholder="HOUR:MINUTE:SECOND"
+          />
+        </p>
+        <p class="clearfix">
+          <button type="submit" name="submit">SEARCH</button>
+        </p>
+      </form>
+      <strong id="copy" style="color: white;">
+        Copyright &copy; Bogdan-Cristian Firuti and Razvan-Stefan Paduraru
+      </strong>
+    </div>
+    <div id="content"></div>
+    <script>
+      function initMap() {
+        var myLatlng = { lat: 44.439663, lng: 26.096306 };
+
+        var map = new google.maps.Map(document.getElementById("map"), {
+          zoom: 8,
+          center: myLatlng,
+          styles: [
+            { elementType: "geometry", stylers: [{ color: "#242f3e" }] },
+            {
+              elementType: "labels.text.stroke",
+              stylers: [{ color: "#242f3e" }],
+            },
+            {
+              elementType: "labels.text.fill",
+              stylers: [{ color: "#746855" }],
+            },
+            {
+              featureType: "administrative.locality",
+              elementType: "labels.text.fill",
+              stylers: [{ color: "#d59563" }],
+            },
+            {
+              featureType: "poi",
+              elementType: "labels.text.fill",
+              stylers: [{ color: "#d59563" }],
+            },
+            {
+              featureType: "poi.park",
+              elementType: "geometry",
+              stylers: [{ color: "#263c3f" }],
+            },
+            {
+              featureType: "poi.park",
+              elementType: "labels.text.fill",
+              stylers: [{ color: "#6b9a76" }],
+            },
+            {
+              featureType: "road",
+              elementType: "geometry",
+              stylers: [{ color: "#38414e" }],
+            },
+            {
+              featureType: "road",
+              elementType: "geometry.stroke",
+              stylers: [{ color: "#212a37" }],
+            },
+            {
+              featureType: "road",
+              elementType: "labels.text.fill",
+              stylers: [{ color: "#9ca5b3" }],
+            },
+            {
+              featureType: "road.highway",
+              elementType: "geometry",
+              stylers: [{ color: "#746855" }],
+            },
+            {
+              featureType: "road.highway",
+              elementType: "geometry.stroke",
+              stylers: [{ color: "#1f2835" }],
+            },
+            {
+              featureType: "road.highway",
+              elementType: "labels.text.fill",
+              stylers: [{ color: "#f3d19c" }],
+            },
+            {
+              featureType: "transit",
+              elementType: "geometry",
+              stylers: [{ color: "#2f3948" }],
+            },
+            {
+              featureType: "transit.station",
+              elementType: "labels.text.fill",
+              stylers: [{ color: "#d59563" }],
+            },
+            {
+              featureType: "water",
+              elementType: "geometry",
+              stylers: [{ color: "#17263c" }],
+            },
+            {
+              featureType: "water",
+              elementType: "labels.text.fill",
+              stylers: [{ color: "#515c6d" }],
+            },
+            {
+              featureType: "water",
+              elementType: "labels.text.stroke",
+              stylers: [{ color: "#17263c" }],
+            },
+          ],
+        });
+
+        var marker = new google.maps.Marker();
+
+        function placeMarker(location) {
+          marker = new google.maps.Marker({
+            position: location,
+            map: map,
+          });
+        }
+
+        map.addListener("click", function (event) {
+          marker.setMap(null);
+          localStorage.lat = event.latLng
+            .toString()
+            .split("(")[1]
+            .split(", ")[0];
+          localStorage.lon = event.latLng
+            .toString()
+            .split(")")[0]
+            .split(", ")[1];
+          placeMarker(event.latLng);
+        });
+
+        document.getElementById("back").onclick = function () {
+          location.href = "http://localhost/#";
+        };
+
+        var form = document.getElementById("formCoords");
+        form.addEventListener("submit", async function (event) {
+          event.preventDefault();
+          const form = event.target;
+          const data = new FormData(form);
+          const coords = Object.fromEntries(data);
+          localStorage.timeGeo = coords.date + ", " + coords.hour;
+          const baseElevation =
+            "https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api/elevation/json?locations=" +
+            `${localStorage.lat}` +
+            "," +
+            `${localStorage.lon}` +
+            "&key=AIzaSyBmdRgK-jwYAc8pA3BVp-7evgxTmjGLjBw";
+          const resultElevation = await fetch(`${baseElevation}`);
+          const dataElevation = await resultElevation.json();
+          localStorage.elv = dataElevation.results[0].elevation;
+          var content = (document.getElementById("content").innerHTML =
+            "<irus-custom-coords></irus-custom-coords>");
+        });
+      }
+    </script>
+    <script
+      async
+      defer
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBmdRgK-jwYAc8pA3BVp-7evgxTmjGLjBw&callback=initMap"
+    ></script>
+  </body>
+</html>

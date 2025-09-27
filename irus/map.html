@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Route on Google Maps</title>
+    <meta name="viewport" content="initial-scale=1.0" />
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <style>
+      #map {
+        height: 800px;
+      }
+      html {
+        background-color: black;
+      }
+      button {
+        background-color: white;
+        color: #000080;
+        padding: 12px 22px;
+        border: 2px solid #000080;
+        font-family: "Comic Sans MS", cursive, sans-serif;
+        margin: 0 0;
+      }
+      button:hover {
+        background-color: #000080;
+        color: white;
+      }
+      .loader {
+        border: 16px solid #f3f3f3;
+        border-radius: 50%;
+        border-top: 16px solid #3498db;
+        width: 60px;
+        height: 60px;
+        -webkit-animation: spin 2s linear infinite; /* Safari */
+        animation: spin 2s linear infinite;
+        margin: 0 46.5%;
+      }
+
+      /* Safari */
+      @-webkit-keyframes spin {
+        0% {
+          -webkit-transform: rotate(0deg);
+        }
+        100% {
+          -webkit-transform: rotate(360deg);
+        }
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+      #loading {
+        color: white;
+        margin: 0 41.5%;
+        width: 50%;
+      }
+
+      #several {
+        color: white;
+        margin: 0 36.5%;
+        width: 50%;
+      }
+      strong {
+        color: white;
+        font-size: 30px;
+      }
+
+      legend {
+        color: white;
+        width: fit-content;
+        padding: 8px;
+        font-size: 30px;
+        border-radius: 5px;
+      }
+      fieldset {
+        padding: 20px;
+        width: 80%;
+        border-radius: 10px white;
+        color: white;
+        margin: 0 auto;
+      }
+    </style>
+  </head>
+  <body>
+    <h2 id="loading">Information loading...</h2>
+    <div id="loaderCircle" class="loader"></div>
+    <h2 id="several">This may take up to several minutes!</h2>
+    <section id="infoSec">
+      <strong>Map informations</strong>
+    </section>
+    <br />
+    <br />
+    <br />
+    <div id="map"></div>
+    <br />
+    <br />
+    <br />
+    <div>
+      <button id="myButton" class="button button2">
+        Back
+      </button>
+    </div>
+
+    <script type="text/javascript">
+      document.getElementById("myButton").onclick = function () {
+        location.href = "http://localhost/#";
+      };
+    </script>
+    <script>
+      var directionsDisplay;
+
+      var directionsService;
+
+      var map;
+
+      let src = "";
+      let dst = "";
+
+      function setData() {
+        if (typeof localStorage != "undefined") {
+          src = localStorage.src;
+          dst = localStorage.dst;
+        }
+      }
+      function initMap() {
+        var showMap = document.getElementById("map");
+        showMap.style.display = "none";
+        var backButton = document.getElementById("myButton");
+        backButton.style.display = "none";
+        var infoSec = document.getElementById("infoSec");
+        infoSec.style.display = "none";
+        setData();
+        directionsDisplay = new google.maps.DirectionsRenderer();
+        directionsService = new google.maps.DirectionsService();
+        map = new google.maps.Map(document.getElementById("map"), {
+          center: { lat: 44.439663, lng: 26.096306 },
+          zoom: 14,
+          styles: [
+            { elementType: "geometry", stylers: [{ color: "#242f3e" }] },
+            {
+              elementType: "labels.text.stroke",
+              stylers: [{ color: "#242f3e" }],
+            },
+            {
+              elementType: "labels.text.fill",
+              stylers: [{ color: "#746855" }],
+            },
+            {
+              featureType: "administrative.locality",
+              elementType: "labels.text.fill",
+              stylers: [{ color: "#d59563" }],
+            },
+            {
+              featureType: "poi",
+              elementType: "labels.text.fill",
+              stylers: [{ color: "#d59563" }],
+            },
+            {
+              featureType: "poi.park",
+              elementType: "geometry",
+              stylers: [{ color: "#263c3f" }],
+            },
+            {
+              featureType: "poi.park",
+              elementType: "labels.text.fill",
+              stylers: [{ color: "#6b9a76" }],
+            },
+            {
+              featureType: "road",
+              elementType: "geometry",
+              stylers: [{ color: "#38414e" }],
+            },
+            {
+              featureType: "road",
+              elementType: "geometry.stroke",
+              stylers: [{ color: "#212a37" }],
+            },
+            {
+              featureType: "road",
+              elementType: "labels.text.fill",
+              stylers: [{ color: "#9ca5b3" }],
+            },
+            {
+              featureType: "road.highway",
+              elementType: "geometry",
+              stylers: [{ color: "#746855" }],
+            },
+            {
+              featureType: "road.highway",
+              elementType: "geometry.stroke",
+              stylers: [{ color: "#1f2835" }],
+            },
+            {
+              featureType: "road.highway",
+              elementType: "labels.text.fill",
+              stylers: [{ color: "#f3d19c" }],
+            },
+            {
+              featureType: "transit",
+              elementType: "geometry",
+              stylers: [{ color: "#2f3948" }],
+            },
+            {
+              featureType: "transit.station",
+              elementType: "labels.text.fill",
+              stylers: [{ color: "#d59563" }],
+            },
+            {
+              featureType: "water",
+              elementType: "geometry",
+              stylers: [{ color: "#17263c" }],
+            },
+            {
+              featureType: "water",
+              elementType: "labels.text.fill",
+              stylers: [{ color: "#515c6d" }],
+            },
+            {
+              featureType: "water",
+              elementType: "labels.text.stroke",
+              stylers: [{ color: "#17263c" }],
+            },
+          ],
+        });
+        directionsDisplay.setMap(map);
+        var request = {
+          origin: src,
+          destination: dst,
+          travelMode: "DRIVING",
+          provideRouteAlternatives: true,
+        };
+
+        directionsService.route(request, async function (result, status) {
+          if (status == google.maps.DirectionsStatus.OK) {
+            var routesCoords = [];
+            var infos = [];
+            for (var i = 0, len = result.routes.length; i < len; i++) {
+              var dirs = new google.maps.DirectionsRenderer({
+                map: map,
+                directions: result,
+                routeIndex: i,
+              });
+              const lenCoords = dirs.getDirections().routes[i].overview_path
+                .length;
+
+              let coords = [];
+
+              let info = [];
+              const start = {
+                lat: dirs.getDirections().routes[i].overview_path[0].toJSON()
+                  .lat,
+                lon: dirs.getDirections().routes[i].overview_path[0].toJSON()
+                  .lng,
+              };
+
+              const baseElevationSt =
+                "https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api/elevation/json?locations=" +
+                `${start.lat}` +
+                "," +
+                `${start.lon}` +
+                "&key=AIzaSyBmdRgK-jwYAc8pA3BVp-7evgxTmjGLjBw";
+              const resultElevationSt = await fetch(`${baseElevationSt}`);
+              const dataElevationSt = await resultElevationSt.json();
+              const elvSt = dataElevationSt.results[0].elevation;
+
+              info.push(elvSt);
+
+              const end = {
+                lat: dirs
+                  .getDirections()
+                  .routes[i].overview_path[lenCoords - 1].toJSON().lat,
+                lon: dirs
+                  .getDirections()
+                  .routes[i].overview_path[lenCoords - 1].toJSON().lng,
+              };
+
+              const baseElevationEnd =
+                "https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api/elevation/json?locations=" +
+                `${end.lat}` +
+                "," +
+                `${end.lon}` +
+                "&key=AIzaSyBmdRgK-jwYAc8pA3BVp-7evgxTmjGLjBw";
+              const resultElevationEnd = await fetch(`${baseElevationEnd}`);
+              const dataElevationEnd = await resultElevationEnd.json();
+              const elvEnd = dataElevationEnd.results[0].elevation;
+
+              info.push(elvEnd);
+
+              const duration = dirs.getDirections().routes[i].legs[0].duration
+                .value;
+              info.push(duration);
+
+              infos.push(info);
+
+              for (var j = 0; j < lenCoords; j++) {
+                const coord = {
+                  lat: dirs.getDirections().routes[i].overview_path[j].toJSON()
+                    .lat,
+                  lon: dirs.getDirections().routes[i].overview_path[j].toJSON()
+                    .lng,
+                };
+                coords.push(coord);
+              }
+              routesCoords.push(coords);
+            }
+            for (var i = result.routes.length; i < 3; i++) {
+              routesCoords.push([]);
+              infos.push([0, 0, 0]);
+            }
+
+            // [
+            //   [inaltime start, inaltime end, durata]
+            //   [inaltime start, inaltime end, durata]
+            //   [inaltime start, inaltime end, durata]
+            // ]
+
+            const routesJSON = {
+              road0: routesCoords[0],
+              road1: routesCoords[1],
+              road2: routesCoords[2],
+              info: infos,
+            };
+            console.log(routesJSON);
+            var formdata = new FormData();
+            formdata.append("data", JSON.stringify(routesJSON));
+            const response = await fetch("http://localhost:81", {
+              method: "POST",
+              body: formdata,
+              redirect: "follow",
+            });
+            if (response.ok) {
+              const data = await response.json();
+              for (var i = 0, len = result.routes.length; i < len; i++) {
+                var dirs = new google.maps.DirectionsRenderer({
+                  map: map,
+                  directions: result,
+                  routeIndex: i,
+                });
+                const lenCoords = dirs.getDirections().routes[i].overview_path
+                  .length;
+                var position = dirs.getDirections().routes[i].overview_path[
+                  Math.floor(lenCoords / 2)
+                ];
+                let ret = [];
+                for (var j = 0; j < data.road0.length; j++) {
+                  if (i === 0) {
+                    ret.push(data.road0[j]);
+                  } else if (i === 1) {
+                    ret.push(data.road1[j]);
+                  } else if (i === 2) {
+                    ret.push(data.road2[j]);
+                  } else {
+                    ret.push("--");
+                  }
+                }
+
+                let content =
+                  "Total distance: " +
+                  dirs.getDirections().routes[i].legs[0].distance.text +
+                  "<br/> Total duration: " +
+                  dirs.getDirections().routes[i].legs[0].duration.text +
+                  "<br/> Flood risk: " +
+                  ret[0] +
+                  "% of road" +
+                  "<br/> Low temperature: " +
+                  ret[1] +
+                  "% of road" +
+                  "<br/> Low pressure: " +
+                  ret[2] +
+                  "% of road" +
+                  "<br/> High humidity: " +
+                  ret[3] +
+                  "% of road" +
+                  "<br/> High cloudiness: " +
+                  ret[4] +
+                  "% of road";
+
+                if (ret[6] === -1 || ret[5] === -1) {
+                  content = content + "<br/> You will drive during the night!";
+                } else {
+                  content =
+                    content +
+                    "<br/> Before sunrise: " +
+                    ret[5] +
+                    "% of road" +
+                    "<br/> After sunset: " +
+                    ret[6] +
+                    "% of road";
+                }
+
+                new google.maps.InfoWindow({
+                  content: content,
+                  map: map,
+                  position: position,
+                });
+              }
+              document.getElementById("loading").innerHTML = "";
+              var circle = document.getElementById("loaderCircle");
+              circle.style.display = "none";
+              document.getElementById("several").innerHTML = "";
+              var showMap = document.getElementById("map");
+              showMap.style.display = "block";
+              var backButton = document.getElementById("myButton");
+              backButton.style.display = "block";
+              var infoSec = document.getElementById("infoSec");
+              infoSec.style.display = "block";
+            }
+          }
+        });
+      }
+    </script>
+    <script
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCm2Cq4f4xHhKYCZ_1V7HVSXbAvhWykEj8&callback=initMap&libraries=geometry"
+      async
+      defer
+    ></script>
+  </body>
+</html>
