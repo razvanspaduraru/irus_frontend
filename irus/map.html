@@ -262,7 +262,7 @@
                 `${start.lat}` +
                 "," +
                 `${start.lon}` +
-                "&key=AIzaSyBmdRgK-jwYAc8pA3BVp-7evgxTmjGLjBw";
+                "&key=${api-key}";
               const resultElevationSt = await fetch(`${baseElevationSt}`);
               const dataElevationSt = await resultElevationSt.json();
               const elvSt = dataElevationSt.results[0].elevation;
@@ -283,7 +283,7 @@
                 `${end.lat}` +
                 "," +
                 `${end.lon}` +
-                "&key=AIzaSyBmdRgK-jwYAc8pA3BVp-7evgxTmjGLjBw";
+                "&key=${api-key}";
               const resultElevationEnd = await fetch(`${baseElevationEnd}`);
               const dataElevationEnd = await resultElevationEnd.json();
               const elvEnd = dataElevationEnd.results[0].elevation;
@@ -414,7 +414,7 @@
       }
     </script>
     <script
-      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCm2Cq4f4xHhKYCZ_1V7HVSXbAvhWykEj8&callback=initMap&libraries=geometry"
+      src="${google-maps-api-url}"
       async
       defer
     ></script>

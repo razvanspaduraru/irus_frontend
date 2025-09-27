@@ -180,7 +180,7 @@ class IrusCustom extends LitElement {
       `${this.lat}` +
       "," +
       `${this.lon}` +
-      "&key=AIzaSyBmdRgK-jwYAc8pA3BVp-7evgxTmjGLjBw";
+      "&key=${api-key}";
     const resultElevation = await fetch(`${baseElevation}`);
     const dataElevation = await resultElevation.json();
     this.elv = dataElevation.results[0].elevation;

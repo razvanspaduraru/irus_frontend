@@ -272,7 +272,7 @@
             `${localStorage.lat}` +
             "," +
             `${localStorage.lon}` +
-            "&key=AIzaSyBmdRgK-jwYAc8pA3BVp-7evgxTmjGLjBw";
+            "&key=${api-key}";
           const resultElevation = await fetch(`${baseElevation}`);
           const dataElevation = await resultElevation.json();
           localStorage.elv = dataElevation.results[0].elevation;
@@ -284,7 +284,7 @@
     <script
       async
       defer
-      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBmdRgK-jwYAc8pA3BVp-7evgxTmjGLjBw&callback=initMap"
+      src="https://maps.googleapis.com/maps/api/js?key=${api-key}&callback=initMap"
     ></script>
   </body>
 </html>
